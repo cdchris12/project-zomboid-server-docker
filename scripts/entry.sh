@@ -1,5 +1,21 @@
 #!/bin/bash
 
+#####################################
+#                                   #
+# Use custom UID and GID values     #
+#                                   #
+#####################################
+
+# Set PUID if custom value found, else use default
+if ! [ -n "${PUID}" ]; then
+  PUID=1000
+fi
+
+# Set PGID if custom value found, else use default
+if ! [ -n "${PGID}" ]; then
+  PGID=1000
+fi
+
 cd ${STEAMAPPDIR}
 
 #####################################
@@ -187,6 +203,10 @@ fi
 export LD_LIBRARY_PATH="${STEAMAPPDIR}/jre64/lib:${LD_LIBRARY_PATH}"
 
 ## Fix the permissions in the data and workshop folders
-chown -R 1000:1000 /home/steam/pz-dedicated/steamapps/workshop /home/steam/Zomboid
+chown -R "${PUID}":"${PGID}" /home/steam/pz-dedicated/steamapps/workshop /home/steam/Zomboid
 
+# Fix for busted start script on Linux
+su - steam -c "cp ~/.steam/steamcmd/linux64/steamclient.so ./"
+
+# Start server
 su - steam -c "export LANG=${LANG} && export LD_LIBRARY_PATH=\"${STEAMAPPDIR}/jre64/lib:${LD_LIBRARY_PATH}\" && cd ${STEAMAPPDIR} && pwd && ./start-server.sh ${ARGS}"
