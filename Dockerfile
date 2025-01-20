@@ -1,9 +1,17 @@
 ###########################################################
 # Dockerfile that builds a Project Zomboid Gameserver
 ###########################################################
+
+# If you need this container to run as a specific user (instead of root), set this ARG
+#ARG USER="transmission"
+
 FROM cm2network/steamcmd:root
 
 LABEL maintainer="daniel.carrasco@electrosoftcloud.com"
+
+# Change these if you need to use a different UID or GID to run the server
+ENV PUID=1000
+ENV PGID=1000
 
 ENV STEAMAPPID=380870
 ENV STEAMAPP=pz
